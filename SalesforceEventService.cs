@@ -15,38 +15,38 @@ namespace salesforce_platform_events_dotnetcore
         Task PublishEventAsync();
     }
 
-    public static class Constants
+  
+    public class SalesforceAuthentificationResponse
     {
-        public static string USERNAME = "";
-        public static string PASSWORD = "";
-        public static string TOKEN = "";
-        public static string CONSUMER_KEY = "";
-        public static string CONSUMER_SECRET = "";
-        public static string TOKEN_REQUEST_ENDPOINTURL = "https://login.salesforce.com/services/oauth2/token";
-        public static string TOKEN_REQUEST_QUERYURL = "/services/data/v43.0/query?q=select+Id+,name+from+account+limit+10";
-
+        public string access_token { get; set; }
+        public string instance_url { get; set; }
+        public string id { get; set; }
+        public string token_type { get; set; }
+        public string issued_at { get; set; }
+        public string signature { get; set; }
     }
 
     public class SalesforceEventService : ISalesforceEventService
     {
-        private const string LOGIN_ENDPOINT = "https://login.salesforce.com/services/oauth2/token";
-        private const string API_ENDPOINT = "/services/data/v49.0/";
-        private readonly IConfigurationRoot ConfigRoot;
+  
+        private readonly IConfigurationRoot _configRoot;
 
 
         public SalesforceEventService(IConfiguration configRoot)
         {
-            ConfigRoot = (IConfigurationRoot) configRoot;
+            _configRoot = (IConfigurationRoot) configRoot;
 
-            // SF requires TLS 1.1 or 1.2
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
+            //// SF requires TLS 1.1 or 1.2
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
 
-            Username = ConfigRoot.GetSection("Salesforce")["Username"];
-            Password = ConfigRoot.GetSection("Salesforce")["Password"];
-            Token = ConfigRoot.GetSection("Salesforce")["Token"];
+            Username = _configRoot.GetSection("Salesforce")["Username"];
+            Password = _configRoot.GetSection("Salesforce")["Password"];
+            Token = _configRoot.GetSection("Salesforce")["Token"];
+            ClientSecret = _configRoot.GetSection("Salesforce")["ClientSecret"];
+            ClientId = _configRoot.GetSection("Salesforce")["ClientId"];
+            LoginEndpoint = _configRoot.GetSection("Salesforce")["LoginEndpoint"];
+            ApiEndpoint = _configRoot.GetSection("Salesforce")["ApiEndpoint"];
 
-            ClientSecret = ConfigRoot.GetSection("Salesforce")["ClientSecret"];
-            ClientId = ConfigRoot.GetSection("Salesforce")["ClientId"];
         }
 
         private  string Username { get; set; }
@@ -56,35 +56,18 @@ namespace salesforce_platform_events_dotnetcore
 
         private string ClientId { get; set; }
         private string ClientSecret { get; set; }
-        private string AuthToken { get; set; }
-        private string InstanceUrl { get; set; }
+
+
+        private  string LoginEndpoint { get; set; }
+        private  string ApiEndpoint { get; set; }
 
 
 
-        public async Task Login()
+
+
+        public async Task<SalesforceAuthentificationResponse> Login()
         {
-            //string jsonResponse;
-            //using (var client = new HttpClient())
-            //{
-            //    HttpContent request = new FormUrlEncodedContent(new Dictionary<string, string>
-            //    {
-            //        {"grant_type", "password"},
-            //        {"client_id", ClientId},
-            //        {"client_secret", ClientSecret},
-            //        {"username", Username},
-            //        {"password", Password}
-            //    });
-
-            //    request.Headers.Add("X-PrettyPrint", "1");
-            //    var response = client.PostAsync(LOGIN_ENDPOINT, request).Result;
-            //    jsonResponse = response.Content.ReadAsStringAsync().Result;
-            //}
-
-            //Console.WriteLine($"Response: {jsonResponse}");
-            //var values = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
-            //AuthToken = values["access_token"];
-            //InstanceUrl = values["instance_url"];
-
+           
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("grant_type", "password"),
@@ -97,13 +80,14 @@ namespace salesforce_platform_events_dotnetcore
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(Constants.TOKEN_REQUEST_ENDPOINTURL),
+                RequestUri = new Uri(LoginEndpoint),
                 Content = content
             };
             var responseMessage = await _httpClient.SendAsync(request).ConfigureAwait(false);
             var response = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            SalesforceAuthentificationResponse responseDyn = JsonConvert.DeserializeObject<SalesforceAuthentificationResponse>(response);
 
-
+            return responseDyn;
         }
 
 
