@@ -70,7 +70,7 @@ namespace salesforce_platform_events_dotnetcore
             //Arrage 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var request = new HttpRequestMessage(HttpMethod.Post, $"{salesforceAuthentificationResponse.instance_url}{ApiEndpoint}sobjects/CustomerInteraction__e");
-            request.Headers.Add("Authorization", "Bearer " + salesforceAuthentificationResponse.access_token);
+            request.Headers.Add("Authorization", $"Bearer {salesforceAuthentificationResponse.access_token}");
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             request.Content = content;
 
