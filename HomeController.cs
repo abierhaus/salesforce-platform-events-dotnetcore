@@ -12,24 +12,25 @@ namespace salesforce_platform_events_dotnetcore
 {
     public class HomeController : Controller
     {
-        public SalesforceEventService _salesforceEventService { get; set; }
+        public SalesforceEventService SalesforceEventService { get; set; }
 
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger, SalesforceEventService salesforceEventService)
         {
             _logger = logger;
-            _salesforceEventService = salesforceEventService;
+            SalesforceEventService = salesforceEventService;
         }
 
 
         public async Task<IActionResult> Index()
         {
 
-            await _salesforceEventService.PublishEventAsync();
+            var result = await SalesforceEventService.PublishEventAsync();
 
+            _logger.LogInformation(result);
 
-            return new OkResult();
+            return new OkObjectResult(result);
         }
     }
 }
