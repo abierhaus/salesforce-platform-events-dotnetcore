@@ -102,11 +102,11 @@ namespace salesforce_platform_events_dotnetcore
                 RequestUri = new Uri(LoginEndpoint),
                 Content = content
             };
-            var responseMessage = await httpClient.SendAsync(request).ConfigureAwait(false);
-            var response = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var responseDyn = JsonConvert.DeserializeObject<SalesforceAuthentificationResponse>(response);
+            var responseMessage = await httpClient.SendAsync(request);
+            var response = await responseMessage.Content.ReadAsStringAsync();
+            var salesforceAuthentificationResponse = JsonConvert.DeserializeObject<SalesforceAuthentificationResponse>(response);
 
-            return responseDyn;
+            return salesforceAuthentificationResponse;
         }
     }
 }
