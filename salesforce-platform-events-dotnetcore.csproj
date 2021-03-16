@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>salesforce_platform_events_dotnetcore</RootNamespace>
+    <UserSecretsId>158e7214-e799-4ec8-adf2-c8fde6d9d672</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
