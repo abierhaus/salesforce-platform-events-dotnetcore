@@ -25,7 +25,7 @@ namespace salesforce_platform_events_dotnetcore
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddSingleton<SalesforceEventService>();
+            services.AddSingleton<ISalesforceEventService, SalesforceEventService>();
 
             services.AddControllersWithViews();
 

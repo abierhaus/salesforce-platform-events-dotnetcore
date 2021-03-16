@@ -12,11 +12,11 @@ namespace salesforce_platform_events_dotnetcore
 {
     public class HomeController : Controller
     {
-        public SalesforceEventService SalesforceEventService { get; set; }
+        public ISalesforceEventService SalesforceEventService { get; set; }
 
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, SalesforceEventService salesforceEventService)
+        public HomeController(ILogger<HomeController> logger, ISalesforceEventService salesforceEventService)
         {
             _logger = logger;
             SalesforceEventService = salesforceEventService;
