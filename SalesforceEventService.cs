@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace salesforce_platform_events_dotnetcore
 {
@@ -64,7 +64,7 @@ namespace salesforce_platform_events_dotnetcore
 
             //Quick note for .NET Salesforce beginners: Fields in Salesforce have the extensions __c. If your name your field "Message" the corresponding API name will be Message__c
             customerInteraction.Message__c = "Hello World";
-            var json = JsonConvert.SerializeObject(customerInteraction);
+            var json = JsonSerializer.Serialize(customerInteraction);
 
 
             //Arrage 
@@ -104,7 +104,7 @@ namespace salesforce_platform_events_dotnetcore
             };
             var responseMessage = await httpClient.SendAsync(request);
             var response = await responseMessage.Content.ReadAsStringAsync();
-            var salesforceAuthentificationResponse = JsonConvert.DeserializeObject<SalesforceAuthentificationResponse>(response);
+            var salesforceAuthentificationResponse = JsonSerializer.Deserialize<SalesforceAuthentificationResponse>(response);
 
             return salesforceAuthentificationResponse;
         }
