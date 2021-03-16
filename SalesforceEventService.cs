@@ -54,8 +54,8 @@ namespace salesforce_platform_events_dotnetcore
 
         public async Task<string> PublishEventAsync()
         {
-            //Login
-            var salesforceAuthentificationResponse = await Login();
+            //Auth
+            var salesforceAuthentificationResponse = await Auth();
 
             using var client = new HttpClient();
 
@@ -82,10 +82,10 @@ namespace salesforce_platform_events_dotnetcore
         }
 
         /// <summary>
-        /// Login to Salesforce and return the login object that contains the access token and instance url
+        /// Auth to Salesforce and return the login object that contains the access token and instance url
         /// </summary>
         /// <returns></returns>
-        public async Task<SalesforceAuthentificationResponse> Login()
+        public async Task<SalesforceAuthentificationResponse> Auth()
         {
             var content = new FormUrlEncodedContent(new[]
             {
